@@ -1,7 +1,10 @@
 name: Roblox Endless Tracker
 on:
   schedule:
-    - cron: '0,5,10,15,20,25,30,35,40,45,50,55 * * * *' # Explicit 5-minute marks
+    - cron: '*/5 * * * *'
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -24,5 +27,5 @@ jobs:
           git config --global user.name "Tracker-Bot"
           git config --global user.email "bot@github.com"
           git add logs.csv status.json
-          git commit -m "Auto-update logs and cache" || exit 0
+          git commit -m "Auto-loop update" || exit 0
           git push
