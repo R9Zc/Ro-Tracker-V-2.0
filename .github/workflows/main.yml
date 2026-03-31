@@ -1,7 +1,7 @@
 name: Roblox Endless Tracker
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '0,5,10,15,20,25,30,35,40,45,50,55 * * * *' # Explicit 5-minute marks
   workflow_dispatch:
 
 jobs:
@@ -11,7 +11,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4 # <--- Updated from v3 to v4
+        uses: actions/checkout@v4
 
       - name: Install Dependencies
         run: pip install requests
@@ -24,5 +24,5 @@ jobs:
           git config --global user.name "Tracker-Bot"
           git config --global user.email "bot@github.com"
           git add logs.csv status.json
-          git commit -m "Update logs and cache [IST]" || exit 0
+          git commit -m "Auto-update logs and cache" || exit 0
           git push
