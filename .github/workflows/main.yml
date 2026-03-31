@@ -1,0 +1,28 @@
+name: Roblox Endless Tracker
+on:
+  schedule:
+    - cron: '*/5 * * * *' # Triggers every 5 minutes
+  workflow_dispatch: # Allows manual start
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: pip install requests
+
+      - name: Run Tracker Script
+        run: python tracker.py
+
+      - name: Commit and Save Data
+        run: |
+          git config --global user.name "Tracker-Bot"
+          git config --global user.email "bot@github.com"
+          git add logs.csv status.json
+          git commit -m "Update logs and cache [IST]" || exit 0
+          git push
