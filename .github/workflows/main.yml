@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # CRITICAL: This must be indented under 'track'
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
 
@@ -19,7 +20,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.MY_GITHUB_TOKEN }} # <--- This is the magic fix
+          token: ${{ secrets.MY_GITHUB_TOKEN }} # Use the secret name you created
 
       - name: Install Dependencies
         run: pip install requests
@@ -32,5 +33,5 @@ jobs:
           git config --global user.name "Tracker-Bot"
           git config --global user.email "bot@github.com"
           git add logs.csv status.json
-          git commit -m "Auto-loop update" || exit 0
+          git commit -m "Auto-loop update [Node24]" || exit 0
           git push
