@@ -1,9 +1,11 @@
-name: Roblox Endless Tracker
+name: Ro-Tracker-V-2.0
 on:
+  schedule:
+    - cron: '*/5 * * * *' # Backup trigger every 5 mins
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main # This triggers the loop whenever a file is saved
+  workflow_dispatch: # Allows you to run it manually
 
 jobs:
   track:
@@ -17,7 +19,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.MY_GITHUB_TOKEN }} # This opens the "Vault"
+          token: ${{ secrets.MY_GITHUB_TOKEN }}
+          persist-credentials: true
 
       - name: Install Dependencies
         run: pip install requests
@@ -31,5 +34,4 @@ jobs:
           git config --global user.email "bot@github.com"
           git add logs.csv status.json
           git commit -m "Auto-loop update" || exit 0
-          # This line uses your "VIP Pass" to trigger the next run
-          git push https://x-access-token:${{ secrets.MY_GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main
+          git push origin main
