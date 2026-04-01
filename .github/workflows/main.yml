@@ -1,4 +1,4 @@
-name: Roblox 5-Min Precise Tracker
+name: Roblox Tracker
 on:
   schedule:
     - cron: '*/5 * * * *'
@@ -9,25 +9,20 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
-          token: ${{ secrets.MY_GITHUB_TOKEN }}
-
-      - name: Install Dependencies
-        run: pip install requests
-
-      - name: Run Tracker
-        run: python tracker.py
-
-      - name: Commit and Save
+          python-version: '3.10'
+      - name: Run
         run: |
-          git config --global user.name "Tracker-Bot"
+          pip install requests
+          python tracker.py
+      - name: Save
+        run: |
+          git config --global user.name "Bot"
           git config --global user.email "bot@github.com"
-          git add logs.csv status.json
-          git commit -m "5-Min Precise Update" || exit 0
-          git push origin main
+          git add .
+          git commit -m "Update" || exit 0
+          git push
