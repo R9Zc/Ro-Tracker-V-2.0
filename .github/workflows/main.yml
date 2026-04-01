@@ -1,11 +1,11 @@
-name: Ro-Tracker-V-2.0
+name: Roblox Endless Tracker
 on:
   schedule:
-    - cron: '*/5 * * * *' # Backup trigger every 5 mins
+    - cron: '*/5 * * * *'
   push:
     branches:
-      - main # This triggers the loop whenever a file is saved
-  workflow_dispatch: # Allows you to run it manually
+      - main
+  workflow_dispatch:
 
 jobs:
   track:
@@ -34,4 +34,5 @@ jobs:
           git config --global user.email "bot@github.com"
           git add logs.csv status.json
           git commit -m "Auto-loop update" || exit 0
-          git push origin main
+          # This specific URL ensures GitHub sees YOU as the pusher
+          git push https://x-access-token:${{ secrets.MY_GITHUB_TOKEN }}@github.com/${{ github.repository_owner }}/Ro-Tracker-V-2.0.git main
