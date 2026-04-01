@@ -1,9 +1,13 @@
-name: Roblox Tracker
 on:
   schedule:
     - cron: '*/5 * * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - 'status.json' # Only trigger if the status actually changes
   workflow_dispatch:
-
+  
 jobs:
   track:
     runs-on: ubuntu-latest
