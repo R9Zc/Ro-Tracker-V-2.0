@@ -1,8 +1,10 @@
 import requests
 import json
 import os
+import time
 from datetime import datetime, timedelta, timezone
 
+# --- CONFIGURATION ---
 USER_CONFIG = {"3263707365": "Saumya", "4491738101": "Saish", "1992158202": "Rushabh"}
 USER_IDS = [3263707365, 4491738101, 1992158202]
 STATUS_FILE = "status.json"
@@ -47,4 +49,7 @@ def check_once():
         json.dump(history, f)
 
 if __name__ == "__main__":
-    check_once()
+    # Checks 5 times (1 min apart) then saves and quits
+    for i in range(5):
+        check_once()
+        if i < 4: time.sleep(60)
