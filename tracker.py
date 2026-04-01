@@ -2,19 +2,17 @@ import requests
 import json
 import os
 import time
-from datetime import datetime, timedelta
+import sys # Added to force logs to show up
+from datetime import datetime, timedelta, timezone
 
-USER_CONFIG = {
-    "3263707365": "Saumya",
-    "4491738101": "Saish",
-    "1992158202": "Rushabh"
-}
+USER_CONFIG = {"3263707365": "Saumya", "4491738101": "Saish", "1992158202": "Rushabh"}
 USER_IDS = [3263707365, 4491738101, 1992158202]
 STATUS_FILE = "status.json"
 LOG_FILE = "logs.csv"
 
 def get_ist_time():
-    return datetime.utcnow() + timedelta(hours=5, minutes=30)
+    # Fixed the warning here
+    return datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
 
 def check_once():
     if os.path.exists(STATUS_FILE):
@@ -41,20 +39,23 @@ def check_once():
 
         if is_playing and not last_state.get("is_playing"):
             history[uid] = {"is_playing": True, "start_time": now_str, "game": game_name}
+            print(f"DEBUG: {nickname} started playing.", flush=True)
         elif not is_playing and last_state.get("is_playing"):
             start_dt = datetime.strptime(last_state["start_time"], "%d-%m-%Y %I:%M %p")
-            duration = now_ist - start_dt
+            duration = now_ist.replace(tzinfo=None) - start_dt
             with open(LOG_FILE, "a") as f:
                 f.write(f"{nickname},{last_state['game']},{last_state['start_time']},{now_str},{str(duration).split('.')[0]}\n")
             history[uid] = {"is_playing": False, "start_time": None, "game": None}
+            print(f"DEBUG: {nickname} stopped playing.", flush=True)
 
     with open(STATUS_FILE, "w") as f:
         json.dump(history, f)
     return history
 
 if __name__ == "__main__":
-    # Checks 5 times (once every 60 seconds)
-    for i in range(5):
+    # Let's do 10 minutes per run to keep it moving faster
+    for i in range(10):
+        print(f"--- Check {i+1}/10 at {get_ist_time().strftime('%I:%M %p')} ---", flush=True)
         check_once()
-        if i < 4: # Don't sleep after the last check
+        if i < 9:
             time.sleep(60)
