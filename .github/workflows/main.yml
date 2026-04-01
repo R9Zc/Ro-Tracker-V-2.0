@@ -1,10 +1,7 @@
 name: Roblox Endless Tracker
 on:
   schedule:
-    - cron: '*/5 * * * *'
-  push:
-    branches:
-      - main
+    - cron: '*/25 * * * *' # Runs every 25 minutes
   workflow_dispatch:
 
 jobs:
@@ -12,27 +9,22 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.MY_GITHUB_TOKEN }}
-          persist-credentials: true
 
       - name: Install Dependencies
         run: pip install requests
 
-      - name: Run Tracker Script
+      - name: Run Tracker
         run: python tracker.py
 
-      - name: Commit and Save Data
+      - name: Commit and Save
         run: |
           git config --global user.name "Tracker-Bot"
           git config --global user.email "bot@github.com"
           git add logs.csv status.json
-          git commit -m "Auto-loop update" || exit 0
-          # This specific URL ensures GitHub sees YOU as the pusher
-          git push https://x-access-token:${{ secrets.MY_GITHUB_TOKEN }}@github.com/${{ github.repository_owner }}/Ro-Tracker-V-2.0.git main
+          git commit -m "Periodic Log Update" || exit 0
+          git push origin main
