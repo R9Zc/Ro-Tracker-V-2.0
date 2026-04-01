@@ -1,7 +1,7 @@
-name: Roblox Endless Tracker
+name: Roblox 5-Min Precise Tracker
 on:
   schedule:
-    - cron: '*/25 * * * *' # Runs every 25 minutes
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -26,5 +29,5 @@ jobs:
           git config --global user.name "Tracker-Bot"
           git config --global user.email "bot@github.com"
           git add logs.csv status.json
-          git commit -m "Periodic Log Update" || exit 0
+          git commit -m "5-Min Precise Update" || exit 0
           git push origin main
