@@ -1,13 +1,9 @@
+name: Roblox Tracker
 on:
   schedule:
     - cron: '*/5 * * * *'
-  push:
-    branches:
-      - main
-    paths:
-      - 'status.json' # Only trigger if the status actually changes
   workflow_dispatch:
-  
+
 jobs:
   track:
     runs-on: ubuntu-latest
@@ -15,18 +11,18 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
-      - name: Run
+          token: ${{ secrets.MY_GITHUB_TOKEN }}
+      
+      - name: Run Tracker
         run: |
           pip install requests
           python tracker.py
-      - name: Save
+          
+      - name: Save Results
         run: |
-          git config --global user.name "Bot"
+          git config --global user.name "Tracker-Bot"
           git config --global user.email "bot@github.com"
-          git add .
-          git commit -m "Update" || exit 0
+          git add logs.csv status.json
+          git commit -m "Auto-update" || exit 0
           git push
